@@ -1,6 +1,6 @@
 package com.example.shop;
 
-import org.hibernate.Session;
+import  org.hibernate.Session;
 import org.hibernate.SessionFactory;
 
 import java.util.Properties;
