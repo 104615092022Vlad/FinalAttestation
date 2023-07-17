@@ -9,7 +9,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class ShopHandlerTests {
     @Test
-    @DisplayName("Имя магазина больше шести символов")
+    @DisplayName("Название магазина должно быть больше шести символов")
     public void checkLengthPositive() {
         String name = "CarPartsShop";
         int count = 6;
@@ -17,14 +17,14 @@ public class ShopHandlerTests {
     }
 
     @Test
-    @DisplayName("Имя магазина начинается с заглавной буквы")
+    @DisplayName("Название магазина должно начинаться с заглавной буквы")
     public void checkFirstLetterPositive() {
         String name = "Shop";
         assertThat(ShopHandler.checkFirstLetter(name)).isTrue();
     }
 
     @Test
-    @DisplayName("Имя магазина меньше шести символов")
+    @DisplayName("Название магазина не должно быть меньше шести символов")
     public void checkLengthNegative() {
         String name = "Shop";
         int count = 6;
@@ -32,7 +32,7 @@ public class ShopHandlerTests {
     }
 
     @Test
-    @DisplayName("Имя магазина начинается со строчной буквы")
+    @DisplayName("Название магазина не должно начинаться со строчной буквы")
     public void checkFirstLetterNegative() {
         String name = "shop";
         assertThat(ShopHandler.checkFirstLetter(name)).isFalse();
