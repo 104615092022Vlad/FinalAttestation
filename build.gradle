@@ -31,6 +31,10 @@ dependencies {
 	testImplementation 'io.qameta.allure:allure-junit5:2.22.2'
 	implementation 'com.github.javafaker:javafaker:1.0.2'
 	testImplementation 'io.rest-assured:rest-assured:5.3.1'
+	implementation 'org.seleniumhq.selenium:selenium-java:4.10.0'
+	implementation 'org.seleniumhq.selenium:selenium-http-jdk-client:4.10.0'
+	implementation 'com.codeborne:selenide:6.14.0'
+	implementation 'org.apache.httpcomponents.client5:httpclient5:5.2.1'
 
 }
 

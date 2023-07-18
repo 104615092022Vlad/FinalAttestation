@@ -23,12 +23,10 @@ public class Basis {
         RestAssured.baseURI = "http://localhost:4000/shops";
     }
 
-    static ShopDto testShop = new ShopDto(0L, "TestShop", true);
-
     protected static SessionFactory factory = buildFactory();
 
-    @Step("Создание тестового магазина")
-    public static void createTestShop() {
+    @Step("Создание тестового магазина, удовлетворяющего требованиям")
+    public static void createTestShop(ShopDto testShop) {
         RequestSpecification getAllShops = given()
                 .contentType(ContentType.JSON)
                 .body(testShop);
@@ -37,6 +35,32 @@ public class Basis {
                 .post("/add")
                 .then()
                 .statusCode(200);
+    }
+
+    @Step("Невозможность создания магазина, не удовлетворяющего требованиям")
+    public static void doNotCreateTestShop1(ShopDto testShop, String message) {
+        RequestSpecification getAllShops = given()
+                .contentType(ContentType.JSON)
+                .body(testShop);
+
+        getAllShops.when()
+                .post("/add")
+                .then()
+                .statusCode(400)
+                .body(equalTo(message));
+    }
+
+    @Step("Невозможность создания магазина, не удовлетворяющего требованиям")
+    public static void doNotCreateTestShop2(ShopDto testShop, String message) {
+        RequestSpecification getAllShops = given()
+                .contentType(ContentType.JSON)
+                .body(testShop);
+
+        getAllShops.when()
+                .post("/add")
+                .then()
+                .statusCode(500)
+                .body(equalTo(message));
     }
 
     @Step("Получение ID тестового магазина")
@@ -49,7 +73,7 @@ public class Basis {
     }
 
     @Step("Поиск тестового магазина")
-    public static void searchTestShop(Long testShopId) {
+    public static void searchTestShop(Long testShopId, String testShopName, boolean testShopPublic) {
         RequestSpecification getTestShop = given();
 
         Response response = getTestShop
@@ -59,8 +83,8 @@ public class Basis {
         response.then()
                 .statusCode(200)
                 .body("shopId", equalTo(testShopId.intValue()),
-                        "shopName", equalTo(testShop.getShopName()),
-                        "shopPublic", equalTo(testShop.isShopPublic()));
+                        "shopName", equalTo(testShopName),
+                        "shopPublic", equalTo(testShopPublic));
     }
 
     @Step("Удаление тестового магазина")

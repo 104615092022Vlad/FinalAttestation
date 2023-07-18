@@ -2,29 +2,17 @@ package com.example.shop.API;
 
 import com.example.shop.models.ShopDto;
 import com.example.shop.models.ShopPojo;
-import com.jayway.jsonpath.JsonPath;
-import io.qameta.allure.Step;
-import io.restassured.RestAssured;
-import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import io.restassured.response.ResponseBody;
 import io.restassured.specification.RequestSpecification;
-import org.hamcrest.Matcher;
-import org.hamcrest.Matchers;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.json.JSONObject;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
-import static com.example.shop.Configuration.buildFactory;
 import static com.example.shop.Configuration.createNewSession;
-import static com.jayway.jsonpath.internal.function.ParamType.JSON;
 import static io.qameta.allure.Allure.step;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
 
 public class ShopAPITests extends Basis {
     @Test
@@ -48,26 +36,30 @@ public class ShopAPITests extends Basis {
             assertThat(responseBody.contains("Id")).isTrue();
             assertThat(responseBody.contains("Public")).isTrue();
         });
+        //FixMe: Чтобы проверка проходила успешно, нужно чтобы списке был хотя бы один магазин.
     }
 
     @Test
     @DisplayName("Поиск магазина по ID")
     public void shouldGetShopWithId() {
-        createTestShop();
+        ShopDto testShop = new ShopDto(0L, "TestShop", true);
+        createTestShop(testShop);
         Long testShopId = getTestShopId();
-        searchTestShop(testShopId);
+        searchTestShop(testShopId, testShop.getShopName(), testShop.isShopPublic());
         deleteTestShop(testShopId);
     }
 
     @Test
     @DisplayName("Добавление магазина")
-    public void shouldAddNewShop() {
+    public void shouldAddShop() {
         Session session = createNewSession(factory);
 
         var shopsList = session.createNativeQuery("SELECT * FROM shops", ShopPojo.class).list();
         int shopsQuantityBeforeAdding = shopsList.size();
 
-        createTestShop();
+        ShopDto testShop = new ShopDto(0L, "TestShop", true);
+
+        createTestShop(testShop);
         Long testShopId = getTestShopId();
 
         shopsList = session.createNativeQuery("SELECT * FROM shops", ShopPojo.class).list();
@@ -87,7 +79,9 @@ public class ShopAPITests extends Basis {
     public void shouldDeleteShop() {
         Session session = createNewSession(factory);
 
-        createTestShop();
+        ShopDto testShop = new ShopDto(0L, "TestShop", true);
+
+        createTestShop(testShop);
         Long testShopId = getTestShopId();
 
         var shopsList = session.createNativeQuery("SELECT * FROM shops", ShopPojo.class).list();
@@ -103,5 +97,50 @@ public class ShopAPITests extends Basis {
         step("Был удалён только тестовый магазин", () -> {
             assertThat(shopsQuantityAfterRemoving).isEqualTo(shopsQuantityBeforeRemoving - 1);
         });
+    }
+
+    //@Disabled
+    @Test
+    @DisplayName("Удаление магазина без указания ID")
+    public void shouldDeleteShopWithoutID() {
+        RequestSpecification getAllShops = given();
+
+        getAllShops.when()
+                .delete("/delete/")
+                .then()
+                .statusCode(204);
+    }
+
+    @Test
+    @DisplayName("Нельзя добавить магазин с названием меньше 6 символов")
+    public void shouldNotAddShopWithShortName() {
+        ShopDto testShop = new ShopDto(0L, "TShop", true);
+        String message = "Name should be more than 6 letters";
+
+        doNotCreateTestShop1(testShop, message);
+    }
+
+    @Test
+    @DisplayName("Нельзя добавить магазин, название которого начинается со строчной буквы")
+    public void shouldNotAddShopWithIncorrectName() {
+        ShopDto testShop = new ShopDto(0L, "testShop", true);
+        String message = "Name should begin with a capital letter";
+
+        doNotCreateTestShop1(testShop, message);
+    }
+
+    //@Disabled
+    @Test
+    @DisplayName("Нельзя добавить магазин, название которого превышает 256 символов")
+    public void shouldNotAddShopWithTooLongName() {
+        String testShopName = "";
+        do {
+            testShopName += "BestShopEver";
+        } while (testShopName.length() <= 256);
+
+        ShopDto testShop = new ShopDto(0L, testShopName, true);
+        String message = "Name should be less or equal than 256 letters";
+
+        doNotCreateTestShop2(testShop, message);
     }
 }
