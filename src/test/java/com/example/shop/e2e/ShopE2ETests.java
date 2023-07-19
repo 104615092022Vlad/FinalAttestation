@@ -5,22 +5,26 @@ import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.openqa.selenium.chrome.ChromeOptions;
 
 import java.util.Date;
 import java.util.Objects;
 
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.WebDriverConditions.url;
 import static io.qameta.allure.Allure.step;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class ShopE2ETests extends MainPage {
+    static String baseURL = "http://localhost:63342/shop/shop.main/com/example/shop/ui/main.html?_ijt=d2uo4iijkc544camhctfilgkt0&_ij_reload=RELOAD_ON_SAVE";
+
     @BeforeAll
     public static void setUp() {
         Configuration.browserCapabilities = new ChromeOptions().addArguments("--remote-allow-origins=*");
         Configuration.browser = "Chrome";
-        Configuration.baseUrl = "http://localhost:63342/shop/shop.main/com/example/shop/ui/main.html?_ijt=d2uo4iijkc544camhctfilgkt0&_ij_reload=RELOAD_ON_SAVE";
+        Configuration.baseUrl = baseURL;
     }
 
     @BeforeEach
@@ -29,15 +33,30 @@ public class ShopE2ETests extends MainPage {
     }
 
     @Test
-    @DisplayName("Второй тест")
-    public void openShopsPage() throws InterruptedException {
-        $(refreshButton).click();
-        Thread.sleep(5000);
+    @DisplayName("Навигация по странице")
+    public void shouldBeNavigation() {
+        step("Кнопка создания магазина", () -> {
+            assertThat($(anchorCreateShop).exists()).isTrue();
+            assertThat($(anchorCreateShop).getAttribute("innerText")).isEqualTo("Create shop");
+            assertThat($(anchorCreateShop).getAttribute("href")).isEqualTo(baseURL + "#create_shop");
+        });
+
+        step("Кнопка списка магазинов", () -> {
+            assertThat($(anchorAllShops).exists()).isTrue();
+            assertThat($(anchorAllShops).getAttribute("innerText")).isEqualTo("All shops");
+            assertThat($(anchorAllShops).getAttribute("href")).isEqualTo(baseURL + "#all_shops");
+        });
+
+        step("Кнопка удаления магазина", () -> {
+            assertThat($(anchorDeleteShop).exists()).isTrue();
+            assertThat($(anchorDeleteShop).getAttribute("innerText")).isEqualTo("Delete shop");
+            assertThat($(anchorDeleteShop).getAttribute("href")).isEqualTo(baseURL + "#delete_shop");
+        });
     }
 
     @Test
     @DisplayName("Обновление списка текущих магазинов")
-    public void refreshButton() {
+    public void shouldBeRefreshButton() {
         allShopsTable.get(0).shouldBe(Condition.visible);
         int shopsQuantityBeforeAdding = allShopsTable.size();
         Date currentTime = new Date();
@@ -51,6 +70,7 @@ public class ShopE2ETests extends MainPage {
 
         step("Нажать на кнопку обновления", () -> {
             assertThat($(refreshButton).exists()).isTrue();
+            assertThat($(refreshButton).getAttribute("innerText")).isEqualTo("Refresh");
             $(refreshButton).click();
         });
 
@@ -86,10 +106,75 @@ public class ShopE2ETests extends MainPage {
     }
 
     @Test
-    @DisplayName("Второй тест")
-    public void telegramButtonClick() throws InterruptedException {
-        open("");
-        $(vkButton).click();
-        Thread.sleep(5000);
+    @DisplayName("Кнопка Telegram")
+    public void shouldBeTelegramButton() {
+        step("Кнопка существует", () -> {
+            assertThat($(telegramButton).exists()).isTrue();
+        });
+
+        step("Название кнопки верно", () -> {
+            assertThat($(telegramButton).getAttribute("innerText")).isEqualTo("Telegram");
+        });
+
+        step("Кнопка перенаправляет на сайт", () -> {
+            $(telegramButton).click();
+            webdriver().shouldHave(url("https://web.telegram.org/k/"));
+        });
+    }
+
+    @Test
+    @DisplayName("Кнопка VK")
+    public void shouldBeVkButton() {
+        step("Кнопка существует", () -> {
+            assertThat($(vkButton).exists()).isTrue();
+        });
+
+        step("Название кнопки верно", () -> {
+            assertThat($(vkButton).getAttribute("innerText")).isEqualTo("VK");
+        });
+
+        step("Кнопка перенаправляет на сайт", () -> {
+            $(vkButton).click();
+            webdriver().shouldHave(url("https://m.vk.com/"));
+        });
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"testShop", "TShop"})
+    @DisplayName("Нельзя создать магазин с некорректным названием")
+    public void shouldNotCreateShopWithShortName(String testShopName) {
+        allShopsTable.get(0).shouldBe(Condition.visible);
+        int shopsQuantityBefore = allShopsTable.size();
+
+        step("Попытка создать магазин с некорректным названием", () -> {
+            $(createShopFiled).sendKeys(testShopName);
+            $(createShopButton).click();
+        });
+
+        step("Обработка ошибки", () -> {
+            $(nameValidation).shouldBe(Condition.visible);
+            $(nameValidation).shouldHave(Condition.partialText("Store naming convention: "));
+        });
+
+        $(refreshButton).click();
+        allShopsTable.get(0).shouldBe(Condition.visible);
+        int shopsQuantityAfter = allShopsTable.size();
+
+        step("Количество магазинов не изменилось", () -> {
+            assertThat(shopsQuantityAfter).isEqualTo(shopsQuantityBefore);
+        });
+    }
+
+    @Test
+    @DisplayName("Нельзя удалить магазин без ID")
+    public void shouldNotDeleteShopWithoutID() {
+        step("Попытка удалить магазин без указания ID", () -> {
+            $(deleteShopButton).click();
+        });
+
+        step("Обработка ошибки", () -> {
+            $(idValidation).shouldBe(Condition.visible);
+            $(idValidation).shouldHave(Condition.text("Must be not empty"));
+        });
     }
 }

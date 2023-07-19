@@ -10,7 +10,6 @@ import io.restassured.specification.RequestSpecification;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.RepeatedTest;
 
 import static com.example.shop.Configuration.buildFactory;
 import static com.example.shop.Configuration.createNewSession;

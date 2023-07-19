@@ -20,9 +20,7 @@ public class MainPage {
 
     SelenideElement createShopFiled = $("#name");
 
-    SelenideElement nameValidation_1 = $$("#name_validation li").get(0);
-
-    SelenideElement nameValidation_2 = $$("#name_validation li").get(1);
+    SelenideElement nameValidation = $("#name_validation");
 
     SelenideElement checkboxPublic = $("[type='checkbox']");
 

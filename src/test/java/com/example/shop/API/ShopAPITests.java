@@ -5,7 +5,6 @@ import com.example.shop.models.ShopPojo;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.hibernate.Session;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -36,7 +35,6 @@ public class ShopAPITests extends Basis {
             assertThat(responseBody.contains("Id")).isTrue();
             assertThat(responseBody.contains("Public")).isTrue();
         });
-        //FixMe: Чтобы проверка проходила успешно, нужно чтобы списке был хотя бы один магазин.
     }
 
     @Test
@@ -112,7 +110,7 @@ public class ShopAPITests extends Basis {
     }
 
     @Test
-    @DisplayName("Нельзя добавить магазин с названием меньше 6 символов")
+    @DisplayName("Обработка ошибки при попытке добавить магазин с названием меньше 6 символов")
     public void shouldNotAddShopWithShortName() {
         ShopDto testShop = new ShopDto(0L, "TShop", true);
         String message = "Name should be more than 6 letters";
@@ -121,7 +119,7 @@ public class ShopAPITests extends Basis {
     }
 
     @Test
-    @DisplayName("Нельзя добавить магазин, название которого начинается со строчной буквы")
+    @DisplayName("Обработка ошибки при попытке добавить магазин, название которого начинается со строчной буквы")
     public void shouldNotAddShopWithIncorrectName() {
         ShopDto testShop = new ShopDto(0L, "testShop", true);
         String message = "Name should begin with a capital letter";
@@ -131,7 +129,7 @@ public class ShopAPITests extends Basis {
 
     //@Disabled
     @Test
-    @DisplayName("Нельзя добавить магазин, название которого превышает 256 символов")
+    @DisplayName("Обработка ошибки при попытке добавить магазин с названием более 256 символов")
     public void shouldNotAddShopWithTooLongName() {
         String testShopName = "";
         do {
