@@ -7,6 +7,8 @@ import io.restassured.specification.RequestSpecification;
 import org.hibernate.Session;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static com.example.shop.Configuration.createNewSession;
 import static io.qameta.allure.Allure.step;
@@ -47,15 +49,20 @@ public class ShopAPITests extends Basis {
         deleteTestShop(testShopId);
     }
 
-    @Test
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "TestShop",
+            "ТестовыйМагазин",
+            "A ?!#@$%&№~*^\"`'\\/|\\(_)[]{}-+=.,:;<>"
+    })
     @DisplayName("Добавление магазина")
-    public void shouldAddShop() {
+    public void shouldAddShop(String testShopName) {
         Session session = createNewSession(factory);
 
         var shopsList = session.createNativeQuery("SELECT * FROM shops", ShopPojo.class).list();
         int shopsQuantityBeforeAdding = shopsList.size();
 
-        ShopDto testShop = new ShopDto(0L, "TestShop", true);
+        ShopDto testShop = new ShopDto(0L, testShopName, true);
 
         createTestShop(testShop);
         Long testShopId = getTestShopId();

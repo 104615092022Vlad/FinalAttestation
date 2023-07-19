@@ -106,6 +106,45 @@ public class ShopE2ETests extends MainPage {
     }
 
     @Test
+    @DisplayName("Переключатель статуса приватности нового магазина")
+    public void shouldBePublicCheckbox() {
+        allShopsTable.get(0).shouldBe(Condition.visible);
+        Date currentTime = new Date();
+        String testShopName = "TestShop" + currentTime.getTime();
+
+        step("Создание публичного тестового магазина", () -> {
+            $(createShopFiled).sendKeys(testShopName);
+            $(checkboxPublic).click();
+            $(createShopButton).click();
+            Selenide.switchTo().alert().accept();
+        });
+
+        step("Обновление списка магазинов", () -> {
+            $(refreshButton).click();
+            allShopsTable.get(0).shouldBe(Condition.visible);
+        });
+
+        SelenideElement row;
+        int i = 1;
+        do {
+            row = allShopsTable.get(allShopsTable.size() - i);
+            i++;
+        } while (!Objects.equals(row.$("td:nth-child(2)").getAttribute("innerText"), testShopName));
+        String createdShopId = row.$("td:nth-child(1)").getAttribute("innerText");
+        String createdShopStatus = row.$("td:nth-child(3)").getAttribute("innerText");
+
+        step("Тестовый магазин имеет публичный статус", () -> {
+            assertThat(createdShopStatus).isEqualTo("true");
+        });
+
+        step("Удаление тестового магазина", () -> {
+            $(deleteShopFiled).sendKeys(createdShopId);
+            $(deleteShopButton).click();
+            Selenide.switchTo().alert().accept();
+        });
+    }
+
+    @Test
     @DisplayName("Кнопка Telegram")
     public void shouldBeTelegramButton() {
         step("Кнопка существует", () -> {
