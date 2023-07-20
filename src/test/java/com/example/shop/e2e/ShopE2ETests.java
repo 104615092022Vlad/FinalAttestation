@@ -147,6 +147,7 @@ public class ShopE2ETests extends MainPage {
     @Test
     @DisplayName("Кнопка Telegram")
     public void shouldBeTelegramButton() {
+        Selenide.webdriver().driver().getWebDriver().manage().window().fullscreen();
         step("Кнопка существует", () -> {
             assertThat($(telegramButton).exists()).isTrue();
         });
@@ -156,6 +157,7 @@ public class ShopE2ETests extends MainPage {
         });
 
         step("Кнопка перенаправляет на сайт", () -> {
+            $(telegramButton).shouldBe(Condition.interactable);
             $(telegramButton).click();
             webdriver().shouldHave(url("https://web.telegram.org/k/"));
         });
@@ -164,6 +166,7 @@ public class ShopE2ETests extends MainPage {
     @Test
     @DisplayName("Кнопка VK")
     public void shouldBeVkButton() {
+        Selenide.webdriver().driver().getWebDriver().manage().window().fullscreen();
         step("Кнопка существует", () -> {
             assertThat($(vkButton).exists()).isTrue();
         });
