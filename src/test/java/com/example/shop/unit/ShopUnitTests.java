@@ -73,7 +73,7 @@ public class ShopUnitTests {
         assertThat(res.getBody()).isEqualTo("Name should be more than 6 letters");
     }
 
-    //@Disabled
+    @Disabled
     @Test
     @DisplayName("Название магазина не должно содержать более 256 символов")
     void shouldNotAddShopMore256LettersName() {

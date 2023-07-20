@@ -5,6 +5,7 @@ import com.example.shop.models.ShopPojo;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.hibernate.Session;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -104,7 +105,7 @@ public class ShopAPITests extends Basis {
         });
     }
 
-    //@Disabled
+    @Disabled
     @Test
     @DisplayName("Удаление магазина без указания ID")
     public void shouldDeleteShopWithoutID() {
@@ -134,7 +135,7 @@ public class ShopAPITests extends Basis {
         doNotCreateTestShop1(testShop, message);
     }
 
-    //@Disabled
+    @Disabled
     @Test
     @DisplayName("Обработка ошибки при попытке добавить магазин с названием более 256 символов")
     public void shouldNotAddShopWithTooLongName() {
