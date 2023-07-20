@@ -18,7 +18,7 @@ import static io.qameta.allure.Allure.step;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class ShopE2ETests extends MainPage {
-    static String baseURL = "http://localhost:63342/shop/shop.main/com/example/shop/ui/main.html?_ijt=d2uo4iijkc544camhctfilgkt0&_ij_reload=RELOAD_ON_SAVE";
+    static String baseURL = "http://localhost:4000/";
 
     @BeforeAll
     public static void setUp() {
