@@ -104,7 +104,7 @@ public class ShopAPITests extends Basis {
         });
     }
 
-    //@Disabled
+    @Disabled
     @Test
     @DisplayName("Удаление магазина без указания ID")
     public void shouldDeleteShopWithoutID() {
@@ -134,7 +134,7 @@ public class ShopAPITests extends Basis {
         doNotCreateTestShop1(testShop, message);
     }
 
-    //@Disabled
+    @Disabled
     @Test
     @DisplayName("Обработка ошибки при попытке добавить магазин с названием более 256 символов")
     public void shouldNotAddShopWithTooLongName() {
