@@ -19,7 +19,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 public class Basis {
     @BeforeAll
     public static void setBaseURI() {
-        RestAssured.baseURI = "http://localhost:4000/shops";
+        RestAssured.baseURI = "http://127.0.0.1:4000/shops";
     }
 
     protected static SessionFactory factory = buildFactory();
