@@ -29,7 +29,7 @@ import static com.example.shop.ShopHandler.checkFirstLetter;
 import static com.example.shop.ShopHandler.checkLength;
 
 @CrossOrigin(
-        origins = "http://localhost:63342",
+        origins = "http://127.0.0.1:63342",
         methods = {RequestMethod.POST, RequestMethod.GET, RequestMethod.OPTIONS, RequestMethod.DELETE},
         allowedHeaders = "Content-type"
 )
