@@ -24,12 +24,11 @@ public class ShopE2ETests extends MainPage {
     public static void setUp() {
         Configuration.browserCapabilities = new ChromeOptions().addArguments("--remote-allow-origins=*");
         Configuration.browser = "Chrome";
-        Configuration.baseUrl = baseURL;
     }
 
     @BeforeEach
     public void openBrowser() {
-        open("");
+        open(baseURL);
     }
 
     @Test
