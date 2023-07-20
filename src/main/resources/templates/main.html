@@ -12,7 +12,7 @@
                 shopName: shopName,
                 shopPublic: shopPublic
             }
-            fetch("http://localhost:4000/shops/add", {
+            fetch("http://127.0.0.1:4000/shops/add", {
                 method: "POST",
                 body: JSON.stringify(body),
                 headers: {
@@ -39,7 +39,7 @@
                 document.getElementById("id_validation").style.setProperty('visibility', 'visible');
                 return;
             } else {
-            fetch("http://localhost:4000/shops/delete/" + shopId, {
+            fetch("http://127.0.0.1/shops/delete/" + shopId, {
                 method: "DELETE",
             })
                 .then(() => {
@@ -99,7 +99,7 @@
             <button onclick="location.reload(); scrollIntoView()">Refresh</button>
             <tbody id="response">
                 <script type="text/javascript">
-                    fetch("http://localhost:4000/shops/all")
+                    fetch("http://127.0.0.1:4000/shops/all")
                         .then((response) => response.json())
                         .then((json) => {
                             for (let i = 0; i < json.length; i++) {
