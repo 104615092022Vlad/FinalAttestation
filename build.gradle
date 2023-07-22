@@ -35,6 +35,10 @@ dependencies {
 	implementation 'org.apache.httpcomponents.client5:httpclient5:5.2.1'
 }
 
+tasks.withType(JavaCompile).configureEach {
+	options.encoding = 'UTF-8'
+}
+
 tasks.named('test') {
 	useJUnitPlatform()
 }
